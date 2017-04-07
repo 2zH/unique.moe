@@ -14,6 +14,8 @@ find_package( Boost 1.63 COMPONENTS system thread REQUIRED )
 
 include_directories( ${Boost_INCLUDE_DIR} )
 
+add_subdirectory("src/redox")
+
 set(PROJECT_INCLUDE_DIR 
 ${PROJECT_SOURCE_DIR}/include
 )
@@ -29,3 +31,4 @@ target_link_libraries(uniquehttp2 ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(uniquehttp2 nghttp2_asio)
 target_link_libraries(uniquehttp2 ssl)
 target_link_libraries(uniquehttp2 crypto)
+target_link_libraries(uniquehttp2 redox)

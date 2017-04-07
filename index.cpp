@@ -1,4 +1,7 @@
 #include <iostream>
+
+#include <boost/algorithm/string.hpp>
+
 #include <redox/redox.hpp>
 
 #include <json/json.hpp>
@@ -21,12 +24,22 @@ generator_cb loading_templete(std::string path, const response &res) {
     return file_generator_from_fd(fd);
 }
 
+std::string getParamters(std::string uri, int count) {
+    std::vector<std::string> strs;
+    boost::split(strs, uri, boost::is_any_of("/"));
+
+    return strs[count];
+}
+
 int main(int argc, char *argv[]) {
     boost::system::error_code ec;
     http2 server;
 
+    redox::Redox rdx;
+    rdx.connect("172.17.0.3", 6379);
+
     //config
-    std::string port = "3000";
+    std::string port = "80";
 
     std::cout << "uniquehttp2 is loading..." << std::endl;
 
@@ -63,20 +76,45 @@ int main(int argc, char *argv[]) {
         // }
     });
 
-    server.handle("/article/", [](const request &req, const response &res) {
+    server.handle("/api/article/", [&rdx](const request &req, const response &res) {
+        std::string article_id = getParamters(req.uri().path, 3);
 
-        std::string uri = req.uri().path;
+        auto method = req.method();
+
+        if (method == "POST") {
+            data
+        }
 
         json data;
 
-        data["article_num"] = 1;
-        data["article_header"] = "第一个篇章";
-        data["article_info"] = {
-            {"date", "2017/4/6"},
-            {"author", "zH"},
-            {"weather", "sunny"}
-        };
-        data["article_content"] = "这是unique.moe的第一篇测试用文章，也许今后不会有第二篇测试用文章了，所以请好好珍惜我！";
+        data["method"] = method;
+
+        // if (!article_id) {
+            // json articles;
+            // std::vector<std::string> tips = {"author", "content", "date"};
+            // int total = stoi(rdx.get("article-count"));
+
+            // for (int i = 0;i < total; i ++) {
+            //     json article;
+            //     std::string n = std::to_string(i + 1);
+            //     for (const auto& tip : tips) {
+            //         article[tip] = rdx.get("article-" + n + "-" + tip);
+            //     }
+            //     articles[i] = article;
+            // }
+            // data["data"] = articles;
+            // data["total"] = rdx.get("article-count");
+            // data["msg"] = "hello " + rdx.get("hello");
+        // }
+
+        // data["article_id"] = article_id;
+        // data["article_header"] = "第一个篇章";
+        // data["article_info"] = {
+        //     {"date", "2017/4/6"},
+        //     {"author", "zH"},
+        //     {"weather", "sunny"}
+        // };
+        // data["article_content"] = "这是unique.moe的第一篇测试用文章，也许今后不会有第二篇测试用文章了，所以请好好珍惜我！";
 
         res.write_head(200);
         res.end(data.dump());
