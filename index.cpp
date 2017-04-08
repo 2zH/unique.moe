@@ -33,6 +33,13 @@ std::string getParamters(std::string uri, int count) {
 
 int main(int argc, char *argv[]) {
     boost::system::error_code ec;
+    boost::asio::ssl::context tls(boost::asio::ssl::context::sslv23);
+
+    tls.use_private_key_file("static/cert/privkey1.pem", boost::asio::ssl::context::sslv23);
+    tls.use_certificate_chain_file("static/cert/chain1.pem");
+
+    configure_tls_context_easy(ec, tls);
+
     http2 server;
 
     redox::Redox rdx;
@@ -122,7 +129,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "welcome to uniquehttp2, master." << std::endl;
 
-    if (server.listen_and_serve(ec, "0.0.0.0", port)) {
+    if (server.listen_and_serve(ec, tls, "0.0.0.0", port)) {
         std::cout << "my http port is " << port <<" , master." << std::endl;
         std::cerr << "error: " << ec.message() << std::endl;
     }else {
