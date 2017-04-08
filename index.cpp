@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
     boost::system::error_code ec;
     boost::asio::ssl::context tls(boost::asio::ssl::context::sslv23);
 
-    tls.use_private_key_file("static/cert/privkey1.pem", boost::asio::ssl::context::sslv23);
-    tls.use_certificate_chain_file("static/cert/chain1.pem");
+    tls.use_private_key_file("../static/cert/privkey1.pem", boost::asio::ssl::context::pem);
+    tls.use_certificate_chain_file("../static/cert/cert1.pem");
 
     configure_tls_context_easy(ec, tls);
 
@@ -58,6 +58,8 @@ int main(int argc, char *argv[]) {
             res.write_head(404);
             res.end();
         }
+
+	std::cout << "some one find me!\n" << std::endl;
 
         res.write_head(200);
         res.end(body);
