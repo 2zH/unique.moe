@@ -50,9 +50,17 @@ int main(int argc, char *argv[]) {
 
     std::cout << "uniquehttp2 is loading..." << std::endl;
 
-    server.handle("/", [](const request &req, const response &res) {
+    std::string style_css = "h2 { color: #5e5e5e; }";
+
+    server.handle("/", [&style_css](const request &req, const response &res) {
 
         auto body = loading_templete("../static/index.html", res);
+
+	boost::system::error_code ec;
+	auto push = res.push(ec, "GET", "/style.css");
+
+	push -> write_head(200, {{"Content-Type", {"text/css"}}});
+	push -> end(style_css);
 
         if (!body) {
             res.write_head(404);
