@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     rdx.connect("172.17.0.3", 6379);
 
     //config
-    std::string port = "80";
+    std::string port = "443";
 
     std::cout << "uniquehttp2 is loading..." << std::endl;
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
         auto method = req.method();
 
         if (method == "POST") {
-            data
+            //data
         }
 
         json data;
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "welcome to uniquehttp2, master." << std::endl;
 
-    if (server.listen_and_serve(ec, "localhost", port)) {
+    if (server.listen_and_serve(ec, "0.0.0.0", port)) {
         std::cout << "my http port is " << port <<" , master." << std::endl;
         std::cerr << "error: " << ec.message() << std::endl;
     }else {
