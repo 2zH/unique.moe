@@ -98,14 +98,10 @@ int main(int argc, char *argv[]) {
 
         auto method = req.method();
 
-        if (method == "POST") {
-            //data
-        }
-
         json data;
 
         data["method"] = method;
-
+        data["request_params"] = article_id;
         // if (!article_id) {
             // json articles;
             // std::vector<std::string> tips = {"author", "content", "date"};
