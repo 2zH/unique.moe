@@ -129,8 +129,29 @@ int main(int argc, char *argv[]) {
         // };
         // data["article_content"] = "这是unique.moe的第一篇测试用文章，也许今后不会有第二篇测试用文章了，所以请好好珍惜我！";
 
-        res.write_head(200);
-        res.end(data.dump());
+        header_map cors_header;
+
+        if (method == "OPTIONS") {
+            cors_header = {
+                {"Access-Control-Allow-Origin", {"*"}},
+                {"Access-Control-Allow-Methods", {"GET, POST, OPTIONS"}},
+                {"Access-Control-Allow-Headers", {"DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"}},
+                {"Access-Control-Max-Age", {"1728000"}},
+                {"Content-Type", {"text/plain charset=UTF-8"}},
+                {"Content-Length", {"0"}}
+            };
+            res.write_head(204, cors_header);
+            res.end();
+        }else {
+            cors_header = {
+                {"Access-Control-Allow-Origin", {"*"}},
+                {"Access-Control-Allow-Methods", {"GET, POST, OPTIONS"}},
+                {"Access-Control-Allow-Headers", {"DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"}},
+                {"Content-Type", {"application/json"}}
+            };
+            res.write_head(200, cors_header);
+            res.end(data.dump());
+        }
     });
 
     std::cout << "welcome to uniquehttp2, master." << std::endl;
