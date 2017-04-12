@@ -31,4 +31,4 @@
 # Personal Folder
 ignore_folder
 build
-static\cert
+!static/cert
