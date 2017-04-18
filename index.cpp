@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
     boost::system::error_code ec;
     boost::asio::ssl::context tls(boost::asio::ssl::context::sslv23);
 
-    tls.use_private_key_file("../static/cert/privkey1.pem", boost::asio::ssl::context::pem);
-    tls.use_certificate_chain_file("../static/cert/cert1.pem");
+    tls.use_private_key_file("../certificate/privkey1.pem", boost::asio::ssl::context::pem);
+    tls.use_certificate_chain_file("../certificate/cert1.pem");
 
     configure_tls_context_easy(ec, tls);
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 
     server.handle("/", [&style_css](const request &req, const response &res) {
 
-        auto body = loading_templete("../static/index.html", res);
+        auto body = loading_templete("../frontend/react-unique/build/index.html", res);
 
 	boost::system::error_code ec;
 	auto push = res.push(ec, "GET", "/style.css");

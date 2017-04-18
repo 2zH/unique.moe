@@ -31,5 +31,10 @@
 # Personal Folder
 ignore_folder
 build
+<<<<<<< HEAD
 !static/cert
 *.pem
+=======
+static/cert
+*.pem
+>>>>>>> 72e57550e77f2435f55630797c660a7e8e8945a0
