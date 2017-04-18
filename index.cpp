@@ -27,13 +27,14 @@ generator_cb loading_file(std::string path, const response &res) {
 void server_push(std::string path, std::string type, const response &res) {
     boost::system::error_code ec;
 
+    std::string content_type = (type == "js") ? "application/javascript; charset=utf-8" : "text/css";
 	auto push = res.push(ec, "GET", "/static/" + type + "/" + path);
 
-	push -> write_head(200, {{"Content-Type", {"text/" + type}}});
+	push -> write_head(200, {{"Content-Type", {content_type}}});
 	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path, res));
 
     auto srcMap = res.push(ec, "GET", "/static/" + type + "/" + path + ".map");
-    srcMap -> write_head(200, {{"Content-Type", {"text/" + type == "js" ? "javascript" : "css"}}});
+    srcMap -> write_head(200, {{"Content-Type", {content_type}}});
 	srcMap -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path + ".map", res));
 }
 
