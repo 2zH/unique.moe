@@ -30,7 +30,7 @@ void server_push(std::string path, std::string type, const response &res) {
 	auto push = res.push(ec, "GET", "/static/" + type + "/" + path);
 
 	push -> write_head(200, {{"Content-Type", {"text/" + type}}});
-	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path));
+	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path, res));
 }
 
 void server_push_js(std::string path, const response &res) {
