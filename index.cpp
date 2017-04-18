@@ -14,7 +14,7 @@ using namespace nghttp2::asio_http2::server;
 using json = nlohmann::json;
 
 
-generator_cb loading_templete(std::string path, const response &res) {
+generator_cb loading_file(std::string path, const response &res) {
     auto fd = open(path.c_str(), O_RDONLY);
 
     if (fd == -1) {
@@ -22,6 +22,23 @@ generator_cb loading_templete(std::string path, const response &res) {
     }
 
     return file_generator_from_fd(fd);
+}
+
+void server_push(std::string path, std::string type, const response &res) {
+    boost::system::error_code ec;
+
+	auto push = res.push(ec, "GET", "/static/" + type + "/" + path);
+
+	push -> write_head(200, {{"Content-Type", {"text/" + type}}});
+	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path));
+}
+
+void server_push_js(std::string path, const response &res) {
+    server_push(path, "js", res);
+}
+
+void server_push_css(std::string path, const response &res) {
+    server_push(path, "css", res);
 }
 
 std::string getParamters(std::string uri, int count) {
@@ -52,15 +69,24 @@ int main(int argc, char *argv[]) {
 
     std::string style_css = "h2 { color: #5e5e5e; }";
 
+    server.handle("/static/", [&style_css](const request &req, const response &res) {
+
     server.handle("/", [&style_css](const request &req, const response &res) {
 
-        auto body = loading_templete("../frontend/react-unique/build/index.html", res);
+        auto body = loading_file("../frontend/react-unique/build/index.html", res);
 
-	boost::system::error_code ec;
-	auto push = res.push(ec, "GET", "/style.css");
+	// boost::system::error_code ec;
+	// auto push = res.push(ec, "GET", "/static/css/main.938b0da0.css");
 
-	push -> write_head(200, {{"Content-Type", {"text/css"}}});
-	push -> end(style_css);
+	// push -> write_head(200, {{"Content-Type", {"text/css"}}});
+	// push -> end(style_css);
+        server_push_js("main.62829402.js", res);
+        server_push_js("0.8c823e06.chunk.js", res);
+        server_push_js("1.133299bd.chunk.js", res);
+        server_push_js("2.52d08a14.chunk.js", res);
+        server_push_js("3.621a5132.chunk.js", res);
+        server_push_js("4.4d09f838.chunk.js", res);
+        server_push_css("main.938b0da0.css", res);
 
         if (!body) {
             res.write_head(404);
