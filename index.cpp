@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 
     // std::string style_css = "h2 { color: #5e5e5e; }";
 
-    server.handle("/static/", [](const request &req, const response &res) {
+    server.handle("/", [](const request &req, const response &res) {
 
         auto body = loading_file("../frontend/react-unique/build/index.html", res);
 
