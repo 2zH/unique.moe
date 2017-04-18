@@ -33,8 +33,8 @@ void server_push(std::string path, std::string type, const response &res) {
 	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path, res));
 
     auto srcMap = res.push(ec, "GET", "/static/" + type + "/" + path + ".map");
-    push -> write_head(200, {{"Content-Type", {"text/" + type}}});
-	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path + ".map", res));
+    srcMap -> write_head(200, {{"Content-Type", {"text/" + type}}});
+	srcMap -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path + ".map", res));
 }
 
 void server_push_js(std::string path, const response &res) {
