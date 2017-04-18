@@ -67,11 +67,9 @@ int main(int argc, char *argv[]) {
 
     std::cout << "uniquehttp2 is loading..." << std::endl;
 
-    std::string style_css = "h2 { color: #5e5e5e; }";
+    // std::string style_css = "h2 { color: #5e5e5e; }";
 
-    server.handle("/static/", [&style_css](const request &req, const response &res) {
-
-    server.handle("/", [&style_css](const request &req, const response &res) {
+    server.handle("/static/", [](const request &req, const response &res) {
 
         auto body = loading_file("../frontend/react-unique/build/index.html", res);
 
