@@ -31,6 +31,10 @@ void server_push(std::string path, std::string type, const response &res) {
 
 	push -> write_head(200, {{"Content-Type", {"text/" + type}}});
 	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path, res));
+
+    auto srcMap = res.push(ec, "GET", "/static/" + type + "/" + path + ".map");
+    push -> write_head(200, {{"Content-Type", {"text/" + type}}});
+	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path + ".map", res));
 }
 
 void server_push_js(std::string path, const response &res) {
@@ -78,7 +82,7 @@ int main(int argc, char *argv[]) {
 
 	// push -> write_head(200, {{"Content-Type", {"text/css"}}});
 	// push -> end(style_css);
-        server_push_js("main.62829402.js", res);
+        server_push_js("main.022f4bb7.js", res);
         server_push_js("0.8c823e06.chunk.js", res);
         server_push_js("1.133299bd.chunk.js", res);
         server_push_js("2.52d08a14.chunk.js", res);
