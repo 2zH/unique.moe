@@ -28,14 +28,19 @@ void server_push(std::string path, std::string type, const response &res) {
     boost::system::error_code ec;
 
     std::string content_type = (type == "js") ? "application/javascript; charset=utf-8" : "text/css";
-	auto push = res.push(ec, "GET", "/static/" + type + "/" + path);
+    if (path == "service-worker.js") {
+        auto serviceWorker = res.push(ec, "GET", "/service-worker.js");
+        serviceWorker -> write_head(200, {{"Content-Type", {content_type}}});
+        serviceWorker -> end(loading_file("../frontend/react-unique/build/service-worker.js", res));
+    } else {
+        auto push = res.push(ec, "GET", "/static/" + type + "/" + path);
+        push -> write_head(200, {{"Content-Type", {content_type}}});
+        push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path, res));
 
-	push -> write_head(200, {{"Content-Type", {content_type}}});
-	push -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path, res));
-
-    auto srcMap = res.push(ec, "GET", "/static/" + type + "/" + path + ".map");
-    srcMap -> write_head(200, {{"Content-Type", {content_type}}});
-	srcMap -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path + ".map", res));
+        auto srcMap = res.push(ec, "GET", "/static/" + type + "/" + path + ".map");
+        srcMap -> write_head(200, {{"Content-Type", {content_type}}});
+        srcMap -> end(loading_file("../frontend/react-unique/build/static/" + type + "/" + path + ".map", res));
+    }
 }
 
 void server_push_js(std::string path, const response &res) {
@@ -84,6 +89,7 @@ int main(int argc, char *argv[]) {
 	// push -> write_head(200, {{"Content-Type", {"text/css"}}});
 	// push -> end(style_css);
         server_push_js("main.022f4bb7.js", res);
+        server_push_js("service-worker.js", res);
         server_push_js("0.8c823e06.chunk.js", res);
         server_push_js("1.133299bd.chunk.js", res);
         server_push_js("2.52d08a14.chunk.js", res);
