@@ -79,6 +79,18 @@ int main(int argc, char *argv[]) {
 
     // std::string style_css = "h2 { color: #5e5e5e; }";
 
+    server.handle("/asset-manifest.json", [](const request &req, const response &res) {
+        auto body = loading_file("../frontend/react-unique/build/asset-manifest.json");
+
+        if (!body) {
+            res.write_head(404);
+            res.end();
+        }
+        
+        res.write_head(200, {{"Content-Type", {"application/json"}}});
+        res.end(body);
+    }
+
     server.handle("/", [](const request &req, const response &res) {
 
         auto body = loading_file("../frontend/react-unique/build/index.html", res);
@@ -102,7 +114,7 @@ int main(int argc, char *argv[]) {
             res.end();
         }
 
-	std::cout << "some one find me!\n" << std::endl;
+	std::cout << "_(///w///」∠)_·´ `·⊂З| || 没钱好痛苦啊...\n" << std::endl;
 
         res.write_head(200);
         res.end(body);
