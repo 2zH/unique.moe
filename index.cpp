@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
     // std::string style_css = "h2 { color: #5e5e5e; }";
 
     server.handle("/asset-manifest.json", [](const request &req, const response &res) {
-        auto body = loading_file("../frontend/react-unique/build/asset-manifest.json");
+        auto body = loading_file("../frontend/react-unique/build/asset-manifest.json", res);
 
         if (!body) {
             res.write_head(404);
