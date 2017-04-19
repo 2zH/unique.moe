@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 
 	// push -> write_head(200, {{"Content-Type", {"text/css"}}});
 	// push -> end(style_css);
-        server_push_js("main.022f4bb7.js", res);
+        server_push_js("main.b2846986.js", res);
         server_push_js("service-worker.js", res);
         server_push_js("0.8c823e06.chunk.js", res);
         server_push_js("1.133299bd.chunk.js", res);
