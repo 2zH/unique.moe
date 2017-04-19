@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
         
         res.write_head(200, {{"Content-Type", {"application/json"}}});
         res.end(body);
-    }
+    });
 
     server.handle("/", [](const request &req, const response &res) {
 
