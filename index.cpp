@@ -79,6 +79,50 @@ int main(int argc, char *argv[]) {
 
     // std::string style_css = "h2 { color: #5e5e5e; }";
 
+    void server_handle_js(std::string url) {
+	server.handle(url, [](const request &req, const response &res) {
+	    auto body = loading_file("../frontend/react-unique/build/static/js/" + url, res);
+	    
+	    if (!body) {
+	        res.write_head(404);
+		res.end();
+	    }
+	    
+	    res.write_head(200, {
+		{"Content-Type", {"application/javascript; charset=utf-8"}},
+		{"Content-Encoding", {"gzip"}}
+	    });
+	    res.end(body);
+	});
+    }
+
+    void server_handle_css(std::string url) {     
+	server.handle(url, [](const request &req, const response &res) {         
+	    auto body = loading_file("../frontend/react-unique/build/static/css/" + url, res);
+  
+	    if (!body) {
+	        res.write_head(404);
+   		res.end();
+       	    }          
+	    
+	    res.write_head(200, {
+	        {"Content-Type", {"text/css"}},
+   		{"Content-Encoding", {"gzip"}}
+            });         
+	    res.end(body);     
+	}); 
+    }
+
+    void server_handle_by_type(std::string url, std::string type) {
+        switch (type) {
+	    case "js":
+	        server_handle_js(url);
+            case "css":
+                server_handle_css(url);
+	    default: std::cout << "Error, no type here!" << std::endl;
+        }
+    }	
+
     server.handle("/asset-manifest.json", [](const request &req, const response &res) {
         auto body = loading_file("../frontend/react-unique/build/asset-manifest.json", res);
 
@@ -90,6 +134,21 @@ int main(int argc, char *argv[]) {
         res.write_head(200, {{"Content-Type", {"application/json"}}});
         res.end(body);
     });
+
+    std::vector<std::string> files = [
+	"main.b2846986.js",
+	"0.8c823e06.chunk.js",
+	"1.133299bd.chunk.js", 
+	"2.52d08a14.chunk.js", 
+	"3.621a5132.chunk.js",
+	"4.4d09f838.chunk.js"
+    ];
+
+    for (const auto &file : files) {
+	server_handle_type(file, "js");
+    }
+
+    server_handle_type("main.938b0da0.css", "css");
 
     server.handle("/", [](const request &req, const response &res) {
 
@@ -115,6 +174,9 @@ int main(int argc, char *argv[]) {
         }
 
 	std::cout << "_(///w///」∠)_·´ `·⊂З| || 没钱好痛苦啊...\n" << std::endl;
+	std::cout << "address: " << req.uri().path << "\n" << std::endl;
+	auto uri = req.uri();
+	std::cout << "query: " << uri.raw_query << "\n" << std::endl;
 
         res.write_head(200);
         res.end(body);
@@ -200,7 +262,7 @@ int main(int argc, char *argv[]) {
         }
     });
 
-    std::cout << "welcome to uniquehttp2, master." << std::endl;
+    std::cout << "welcome to uniquehttp2, master.\n" << std::endl;
 
     if (server.listen_and_serve(ec, tls, "0.0.0.0", port)) {
         std::cout << "my http port is " << port <<" , master." << std::endl;
